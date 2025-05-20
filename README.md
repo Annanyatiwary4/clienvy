@@ -1,6 +1,6 @@
-# 🌿 clenv — Smart Environment Variable Manager !!
+# 🌿 clienv — Smart Environment Variable Manager !!
 
-`clenv` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
+`clienv` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
 
 It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.env` consistency before each commit.
 
@@ -19,30 +19,30 @@ It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.
 ## 📦 Installation
 
 ```bash
-npm install -g clenv
+npm install -g clienv
 ```
 verify Installation
 ```bash
-clenv --version
+clienv --version
 ```
 ---
 
 ## 🛠️ Commands
 
   
-### clenv init
+### clienv init
  Full setup: extract, replace, generate env files, and install Git hook.
 
-### clenv check
+### clienv check
  Checks if .env exists and verifies that all keys are present and used correctly.
 
-### clenv extract
+### clienv extract
  Extracts secrets from your code without replacing or generating files.
 
-### clenv replace
+### clienv replace
 Replaces hardcoded secrets in your code with environment variable references.
 
-### clenv generate
+### clienv generate
  Generates .env and .env.template files from extracted secrets.
 
 ---
@@ -52,22 +52,22 @@ Replaces hardcoded secrets in your code with environment variable references.
 Run full setup once:
 
 ```bash
-clenv init
+clienv init
 ```
 
 Later, when you add new secrets:
 
 ```bash
 
-- clenv extract
-- clenv replace
-- clenv generate
+- clienv extract
+- clienv replace
+- clienv generate
 ```
 
-Use clenv check to verify .env correctness before commits (or rely on the Git hook):
+Use clienv check to verify .env correctness before commits (or rely on the Git hook):
 
 ```bash
-clenv check
+clienv check
 ```
 ---
 
