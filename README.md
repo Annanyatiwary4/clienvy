@@ -1,4 +1,4 @@
-# 🌿 clenv — Smart Environment Variable Manager for Node.js & React
+# 🌿 clenv — Smart Environment Variable Manager !!
 
 `clenv` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
 
