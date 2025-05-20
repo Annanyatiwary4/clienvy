@@ -1,0 +1,19 @@
+{
+  "name": "clenv",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "clenv": "./bin/index.js"
+  },
+  "type": "commonjs",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "fs-extra": "^11.3.0",
+    "globby": "^14.1.0"
+  }
+}
