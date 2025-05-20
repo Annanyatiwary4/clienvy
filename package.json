@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "bin": {
-    "clenv": "./bin/index.js"
+    "clenv": "bin/index.js"
   },
   "type": "commonjs",
   "keywords": [],

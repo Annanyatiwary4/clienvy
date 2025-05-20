@@ -21,6 +21,10 @@ It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.
 ```bash
 npm install -g clenv
 ```
+verify Installation
+```bash
+clenv --version
+```
 ---
 
 ## 🛠️ Commands
