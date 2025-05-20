@@ -1,6 +1,6 @@
-# 🌿 clienv — Smart Environment Variable Manager !!
+# 🌿 clienvy — Smart Environment Variable Manager !!
 
-`clienv` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
+`clienvy` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
 
 It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.env` consistency before each commit.
 
@@ -19,7 +19,7 @@ It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.
 ## 📦 Installation
 
 ```bash
-npm install -g clienv
+npm install -g clienvy
 ```
 verify Installation
 ```bash
