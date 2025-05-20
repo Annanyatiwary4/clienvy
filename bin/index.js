@@ -4,6 +4,8 @@ const { extractSecrets } = require('../lib/extract');
 const { generateEnvFiles } = require('../lib/generateEnv');
 const { program } = require('commander');
 const { replaceSecrets } = require('../lib/replace');
+const { init } = require('../lib/init');
+const { check } = require('../lib/check');
 
 program
   .name('clenv')
@@ -13,7 +15,7 @@ program
 
   // command to extract hardcoded secrets from project files
   // This command scans the project files for hardcoded secrets and prints them to the console.
-  // It uses the `extractSecrets` function from the `lib/extract` module to perform the scanning.
+  // It uses the process.env.VITE_TOKEN function from the `lib/extract` module to perform the scanning.
 program
   .command('extract [projectPath]')
   .description('Scan project files and extract hardcoded secrets')
@@ -76,6 +78,31 @@ program
       await generateEnvFiles(path.resolve(projectPath), uniqueSecrets);
     } catch (err) {
       console.error('Error generating env files:', err);
+    }
+  });
+
+  // 🚀 Init full setup
+program
+  .command('init [projectPath]')
+  .description('Full setup: extract, replace, generate .env files, and set up Git hook')
+  .action(async (projectPath = process.cwd()) => {
+    try {
+      await init(path.resolve(projectPath));
+    } catch (err) {
+      console.error('Error running clenv init:', err.message);
+    }
+  });
+
+
+  // command to check for missing or unused environment variables
+  program
+  .command('check [projectPath]')
+  .description('Check for missing or unused environment variables')
+  .action(async (projectPath = process.cwd()) => {
+    try {
+      await check(path.resolve(projectPath));
+    } catch (err) {
+      console.error('Error during check:', err.message);
     }
   });
 
