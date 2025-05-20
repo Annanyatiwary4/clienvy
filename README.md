@@ -26,20 +26,20 @@ npm install -g clenv
 ## 🛠️ Commands
 
   
-clenv init
-# Full setup: extract, replace, generate env files, and install Git hook.
+### clenv init
+ Full setup: extract, replace, generate env files, and install Git hook.
 
-clenv check
-# Checks if .env exists and verifies that all keys are present and used correctly.
+### clenv check
+ Checks if .env exists and verifies that all keys are present and used correctly.
 
-clenv extract
-# Extracts secrets from your code without replacing or generating files.
+### clenv extract
+ Extracts secrets from your code without replacing or generating files.
 
-clenv replace
-# Replaces hardcoded secrets in your code with environment variable references.
+### clenv replace
+Replaces hardcoded secrets in your code with environment variable references.
 
-clenv generate
-# Generates .env and .env.template files from extracted secrets.
+### clenv generate
+ Generates .env and .env.template files from extracted secrets.
 
 ---
 
