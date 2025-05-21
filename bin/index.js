@@ -7,10 +7,12 @@ const { replaceSecrets } = require('../lib/replace');
 const { init } = require('../lib/init');
 const { check } = require('../lib/check');
 
+const pkg = require('../package.json');
+
 program
   .name('clenv')
   .description('CLI tool to extract secrets, replace them, and generate .env files')
-  .version('0.1.0');
+  .version(pkg.version);
 
 
   // command to extract hardcoded secrets from project files
