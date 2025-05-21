@@ -23,26 +23,26 @@ npm install -g clienvy
 ```
 verify Installation
 ```bash
-clienv --version
+clienvy --version
 ```
 ---
 
 ## 🛠️ Commands
 
   
-### clienv init
+### clienvy init
  Full setup: extract, replace, generate env files, and install Git hook.
 
-### clienv check
+### clienvy check
  Checks if .env exists and verifies that all keys are present and used correctly.
 
-### clienv extract
+### clienvy extract
  Extracts secrets from your code without replacing or generating files.
 
-### clienv replace
+### clienvy replace
 Replaces hardcoded secrets in your code with environment variable references.
 
-### clienv generate
+### clienvy generate
  Generates .env and .env.template files from extracted secrets.
 
 ---
@@ -52,27 +52,27 @@ Replaces hardcoded secrets in your code with environment variable references.
 Run full setup once:
 
 ```bash
-clienv init
+clienvy init
 ```
 
 Later, when you add new secrets:
 
 ```bash
 
-- clienv extract
-- clienv replace
-- clienv generate
+- clienvy extract
+- clienvy replace
+- clienvy generate
 ```
 
 Use clienv check to verify .env correctness before commits (or rely on the Git hook):
 
 ```bash
-clienv check
+clienvy check
 ```
 ---
 
-## 🧠 Why clenv?
-Managing secrets manually is error-prone. clenv automates the boring and risky parts so you can:
+## 🧠 Why clienvy?
+Managing secrets manually is error-prone. clienvy automates the boring and risky parts so you can:
 
 - ✅ Code securely
 
