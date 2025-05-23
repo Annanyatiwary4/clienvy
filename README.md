@@ -1,4 +1,4 @@
-# 🌿 clienvy — Smart Environment Variable Manager !!
+# ⚙️ clienvy — Smart Environment Variable Manager !!
 
 `clienvy` is a lightweight CLI tool that **automatically detects hardcoded secrets**, replaces them with **environment variables**, and **generates `.env` and `.env.template` files** — all with a single command.
 
@@ -9,10 +9,10 @@ It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.
 ## 🚀 Features
 
 - 🔍 **Scan** your code for hardcoded secrets like API keys, Mongo URIs, JWTs, and more.
-- 🔁 **Replace** them with secure `process.env.KEY` or `import.meta.env.KEY` (for React/Vite).
+- 🔁 **Replace** them with secure `process.env.KEY` or `import.meta.env.KEY`.
 - 📦 **Generate** `.env` and `.env.template` automatically.
-- 🛡️ **Pre-commit Git hook** to run secret checks.
-- ✅ Works for **Node.js, React, Vite** projects.
+- 🛡️ **Pre-commit Git hook** to automatically check for exposed secrets, unused variables, or any potential misuse before every commit.
+
 
 ---
 
@@ -47,7 +47,7 @@ Replaces hardcoded secrets in your code with environment variable references.
 
 ---
 
-## Typical workflow example:
+## RoadMap:
 
 Run full setup once:
 
@@ -60,8 +60,9 @@ Later, when you add new secrets:
 ```bash
 
 - clienvy extract
-- clienvy replace
 - clienvy generate
+- clienvy replace
+
 ```
 
 Use clienv check to verify .env correctness before commits (or rely on the Git hook):
@@ -79,5 +80,15 @@ Managing secrets manually is error-prone. clienvy automates the boring and risky
 - 🧼 Keep your codebase clean
 
 - ⛔ Prevent accidental leaks
+
+## 🤝 Contribution
+Clienvy is an open project, and we’d love your help! Feel free to jump in — whether it’s fixing bugs, suggesting improvements, or just spreading the word, every contribution makes a difference.And If you really find it helpful, please give it a ⭐ on [GitHub](https://github.com/Annanyatiwary4/clienvy) !.
+
+
+
+
+
+
+
 
 

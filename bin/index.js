@@ -10,7 +10,7 @@ const { check } = require('../lib/check');
 const pkg = require('../package.json');
 
 program
-  .name('clenv')
+  .name('clienvy')
   .description('CLI tool to extract secrets, replace them, and generate .env files')
   .version(pkg.version);
 
@@ -30,58 +30,36 @@ program
         console.log('No secrets found!');
       } else {
         console.log(`Found ${secrets.length} secrets:\n`);
-       
       }
     } catch (err) {
       console.error('Error during extraction:', err);
     }
   });
 
-  //command to replace hardcoded secrets with environment variables
 program
   .command('replace [projectPath]')
   .description('Replace hardcoded secrets with env variable references')
   .action(async (projectPath = process.cwd()) => {
     try {
-      const secrets = await extractSecrets(path.resolve(projectPath));
-      if (secrets.length === 0) {
-        console.log('No secrets found to replace.');
-        return;
-      }
-
-      await replaceSecrets(path.resolve(projectPath), secrets);
+      // DO NOT call extractSecrets here! Just read secrets.json inside replaceSecrets.
+      await replaceSecrets(path.resolve(projectPath));
     } catch (err) {
       console.error('Error replacing secrets:', err);
     }
   });
 
-
-  // command to generate .env and .env.template files
-  // This command generates .env and .env.template files based on the extracted secrets.
 program
   .command('generate [projectPath]')
   .description('Generate .env and .env.template files')
   .action(async (projectPath = process.cwd()) => {
     try {
-      // First, extract secrets
-      const secrets = await extractSecrets(path.resolve(projectPath));
-      if (secrets.length === 0) {
-        console.log('No secrets found to generate env files.');
-        return;
-      }
-
-      // Remove duplicates and keep key & value only
-      const uniqueSecretsMap = new Map();
-      secrets.forEach(({ key, value }) => {
-        if (!uniqueSecretsMap.has(key)) uniqueSecretsMap.set(key, value);
-      });
-      const uniqueSecrets = Array.from(uniqueSecretsMap, ([key, value]) => ({ key, value }));
-
-      await generateEnvFiles(path.resolve(projectPath), uniqueSecrets);
+      // DO NOT call extractSecrets here! Just read secrets.json inside generateEnvFiles.
+      await generateEnvFiles(path.resolve(projectPath));
     } catch (err) {
       console.error('Error generating env files:', err);
     }
   });
+
 
   // 🚀 Init full setup
 program
