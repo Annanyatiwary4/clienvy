@@ -4,6 +4,8 @@
 
 It also sets up a **Git pre-commit hook** to prevent secret leaks by ensuring `.env` consistency before each commit.
 
+
+![NPM Total Downloads](https://img.shields.io/npm/dt/clienvy?color=brightgreen&label=Total%20Downloads&style=for-the-badge)
 ---
 
 ## 🚀 Features
