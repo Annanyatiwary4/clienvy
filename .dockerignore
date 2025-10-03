@@ -1,0 +1,20 @@
+# Node modules (will be installed in the container)
+node_modules/
+
+# Logs
+*.log
+
+# Environment files (secrets)
+.env
+.env.*
+
+# Local config
+.clienvy/
+
+# Build output (optional, if you build inside the container)
+dist/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
