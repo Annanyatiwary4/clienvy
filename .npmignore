@@ -1,0 +1,11 @@
+# Environment files
+.env
+.env.*
+
+# Local config
+.clienvy/
+
+# Build output and tests
+dist/
+coverage/
+*.log
