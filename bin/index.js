@@ -6,6 +6,7 @@ const { program } = require('commander');
 const { replaceSecrets } = require('../lib/replace');
 const { init } = require('../lib/init');
 const { check } = require('../lib/check');
+const { validateSecrets, generateValidationReport } = require('../lib/validate');
 
 const pkg = require('../package.json');
 
@@ -21,15 +22,36 @@ program
 program
   .command('extract [projectPath]')
   .description('Scan project files and extract hardcoded secrets')
-  .action(async (projectPath = process.cwd()) => {
+  .option('-v, --validate', 'Enable validation during extraction')
+  .option('--entropy-threshold <number>', 'Set entropy threshold', parseFloat, 4.0)
+  .action(async (projectPath = process.cwd(), options) => {
     console.log(`🔍 Scanning project: ${projectPath}`);
 
     try {
-      const secrets = await extractSecrets(path.resolve(projectPath));
+      const extractOptions = {
+        enableValidation: options.validate,
+        checkEntropy: options.validate,
+        checkFormat: options.validate,
+        entropyThreshold: options.entropyThreshold || 4.0
+      };
+      
+      const secrets = await extractSecrets(path.resolve(projectPath), extractOptions);
       if (secrets.length === 0) {
         console.log('No secrets found!');
       } else {
         console.log(`Found ${secrets.length} secrets:\n`);
+        
+        if (options.validate) {
+          const table = secrets.map(secret => ({
+            Key: secret.key,
+            Type: secret.name || 'Unknown',
+            File: secret.file,
+            Line: secret.line,
+            Confidence: secret.validation?.confidence || 'N/A',
+            Score: secret.validation?.score || 'N/A'
+          }));
+          console.table(table);
+        }
       }
     } catch (err) {
       console.error('Error during extraction:', err);
@@ -83,6 +105,73 @@ program
       await check(path.resolve(projectPath));
     } catch (err) {
       console.error('Error during check:', err.message);
+    }
+  });
+
+// New validate command for comprehensive secret validation
+program
+  .command('validate [projectPath]')
+  .description('Validate extracted secrets with entropy and format analysis')
+  .option('-f, --format <format>', 'Output format: table, json', 'table')
+  .option('--entropy-threshold <number>', 'Set entropy threshold', parseFloat, 4.0)
+  .action(async (projectPath = process.cwd(), options) => {
+    console.log(`🔍 Validating secrets in: ${projectPath}`);
+    
+    try {
+      const cachePath = path.join(path.resolve(projectPath), '.clienvy', 'secrets.json');
+      
+      if (!(await fs.pathExists(cachePath))) {
+        console.log('⚠️  No secrets found. Run `clienvy extract` first.');
+        return;
+      }
+      
+      const secrets = await fs.readJson(cachePath);
+      
+      if (!Array.isArray(secrets) || secrets.length === 0) {
+        console.log('⚠️  No secrets to validate.');
+        return;
+      }
+      
+      console.log(`📊 Found ${secrets.length} secrets to validate...`);
+      
+      const validationOptions = {
+        checkEntropy: true,
+        checkFormat: true,
+        performLiveCheck: false,
+        entropyOptions: {
+          entropyThreshold: options.entropyThreshold
+        }
+      };
+      
+      console.log('🔄 Starting validation...');
+      const results = await validateSecrets(secrets, validationOptions);
+      const report = generateValidationReport(results);
+      
+      if (options.format === 'json') {
+        console.log(JSON.stringify(report, null, 2));
+      } else {
+        console.log('\n📊 Validation Summary:');
+        console.log(`Total secrets: ${report.summary.total}`);
+        console.log(`High confidence: ${report.summary.highConfidence}`);
+        console.log(`Medium confidence: ${report.summary.mediumConfidence}`);
+        console.log(`Low confidence: ${report.summary.lowConfidence}`);
+        console.log(`Format valid: ${report.summary.formatValid}`);
+        console.log(`High entropy: ${report.summary.highEntropy}`);
+        
+        console.log('\n📋 Detailed Results:');
+        console.table(report.details.map(detail => ({
+          Key: detail.key,
+          Type: detail.type,
+          File: `${detail.file}:${detail.line}`,
+          Confidence: detail.confidence,
+          Score: detail.score
+        })));
+      }
+      
+      console.log('\n✅ Validation completed!');
+      
+    } catch (err) {
+      console.error('Error during validation:', err.message);
     }
   });
 
