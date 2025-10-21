@@ -6,7 +6,8 @@
     "clienvy": "bin/index.js"
   },
   "type": "commonjs",
-  "keywords": [ "environment",
+  "keywords": [
+    "environment",
     "variables",
     "env",
     "secrets",
@@ -14,9 +15,15 @@
     "dotenv",
     "security",
     "pre-commit",
-    "git-hook","npm","cli-tool",
-    "node-cli", "auto-env","env-template", "env-generator",
-    "secret-scanner"],
+    "git-hook",
+    "npm",
+    "cli-tool",
+    "node-cli",
+    "auto-env",
+    "env-template",
+    "env-generator",
+    "secret-scanner"
+  ],
   "author": "",
   "license": "MIT",
   "description": "",
@@ -24,7 +31,7 @@
     "axios": "^1.7.7",
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
-    "fs-extra": "^11.3.0",
+    "fs-extra": "^11.3.2",
     "globby": "^14.1.0"
   }
 }

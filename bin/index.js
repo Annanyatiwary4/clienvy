@@ -15,75 +15,81 @@ program
   .description('CLI tool to extract secrets, replace them, and generate .env files')
   .version(pkg.version);
 
-
-  // command to extract hardcoded secrets from project files
-  // This command scans the project files for hardcoded secrets and prints them to the console.
-  // It uses the process.env.VITE_TOKEN function from the `lib/extract` module to perform the scanning.
+// command to extract hardcoded secrets from project files
+// This command scans the project files for hardcoded secrets and prints them to the console.
+// It uses the process.env.VITE_TOKEN function from the `lib/extract` module to perform the scanning.
 program
   .command('extract [projectPath]')
   .description('Scan project files and extract hardcoded secrets')
   .option('-v, --validate', 'Enable validation during extraction')
   .option('--entropy-threshold <number>', 'Set entropy threshold', parseFloat, 4.0)
+  .option('--regex-scan', 'Enable language-agnostic regex scanning across all file types')
   .action(async (projectPath = process.cwd(), options) => {
     console.log(`🔍 Scanning project: ${projectPath}`);
 
     try {
       const extractOptions = {
-        enableValidation: options.validate,
-        checkEntropy: options.validate,
-        checkFormat: options.validate,
-        entropyThreshold: options.entropyThreshold || 4.0
+        enableValidation: options.validate || false,
+        checkEntropy: options.validate || false,
+        checkFormat: options.validate || false,
+        entropyThreshold: options.entropyThreshold || 4.0,
+        regexScan: options.regexScan || false, // new option
       };
-      
+
+      if (extractOptions.regexScan) {
+        console.log('⚡ Running regex-based, language-agnostic secret scan...');
+      }
+
       const secrets = await extractSecrets(path.resolve(projectPath), extractOptions);
-      if (secrets.length === 0) {
+
+      if (!secrets || secrets.length === 0) {
         console.log('No secrets found!');
-      } else {
-        console.log(`Found ${secrets.length} secrets:\n`);
-        
-        if (options.validate) {
-          const table = secrets.map(secret => ({
-            Key: secret.key,
-            Type: secret.name || 'Unknown',
-            File: secret.file,
-            Line: secret.line,
-            Confidence: secret.validation?.confidence || 'N/A',
-            Score: secret.validation?.score || 'N/A'
-          }));
-          console.table(table);
-        }
+        return;
+      }
+
+      console.log(`Found ${secrets.length} secrets:\n`);
+
+      if (options.validate) {
+        const table = secrets.map(secret => ({
+          Key: secret.key,
+          Type: secret.name || 'Unknown',
+          File: secret.file,
+          Line: secret.line,
+          Confidence: secret.validation?.confidence || 'N/A',
+          Score: secret.validation?.score || 'N/A'
+        }));
+        console.table(table);
       }
     } catch (err) {
       console.error('Error during extraction:', err);
     }
   });
 
+// --- Replace Command ---
 program
   .command('replace [projectPath]')
   .description('Replace hardcoded secrets with env variable references')
   .action(async (projectPath = process.cwd()) => {
     try {
-      // DO NOT call extractSecrets here! Just read secrets.json inside replaceSecrets.
       await replaceSecrets(path.resolve(projectPath));
     } catch (err) {
       console.error('Error replacing secrets:', err);
     }
   });
 
+// --- Generate Command ---
 program
   .command('generate [projectPath]')
   .description('Generate .env and .env.template files')
   .action(async (projectPath = process.cwd()) => {
     try {
-      // DO NOT call extractSecrets here! Just read secrets.json inside generateEnvFiles.
       await generateEnvFiles(path.resolve(projectPath));
     } catch (err) {
       console.error('Error generating env files:', err);
     }
   });
 
-
-  // 🚀 Init full setup
+// --- Init Command ---
 program
   .command('init [projectPath]')
   .description('Full setup: extract, replace, generate .env files, and set up Git hook')
@@ -91,13 +97,12 @@ program
     try {
       await init(path.resolve(projectPath));
     } catch (err) {
-      console.error('Error running clenv init:', err.message);
+      console.error('Error running clienvy init:', err.message);
     }
   });
 
-
-  // command to check for missing or unused environment variables
-  program
+// --- Check Command ---
+program
   .command('check [projectPath]')
   .description('Check for missing or unused environment variables')
   .action(async (projectPath = process.cwd()) => {
@@ -108,7 +113,7 @@ program
     }
   });
 
-// New validate command for comprehensive secret validation
+// --- Validate Command ---
 program
   .command('validate [projectPath]')
   .description('Validate extracted secrets with entropy and format analysis')
@@ -116,24 +121,25 @@ program
   .option('--entropy-threshold <number>', 'Set entropy threshold', parseFloat, 4.0)
   .action(async (projectPath = process.cwd(), options) => {
     console.log(`🔍 Validating secrets in: ${projectPath}`);
-    
+
     try {
+      const fs = require('fs-extra');
       const cachePath = path.join(path.resolve(projectPath), '.clienvy', 'secrets.json');
-      
+
       if (!(await fs.pathExists(cachePath))) {
         console.log('⚠️  No secrets found. Run `clienvy extract` first.');
         return;
       }
-      
+
       const secrets = await fs.readJson(cachePath);
-      
+
       if (!Array.isArray(secrets) || secrets.length === 0) {
         console.log('⚠️  No secrets to validate.');
         return;
       }
-      
+
       console.log(`📊 Found ${secrets.length} secrets to validate...`);
-      
+
       const validationOptions = {
         checkEntropy: true,
         checkFormat: true,
@@ -142,11 +148,11 @@ program
           entropyThreshold: options.entropyThreshold
         }
       };
-      
+
       console.log('🔄 Starting validation...');
       const results = await validateSecrets(secrets, validationOptions);
       const report = generateValidationReport(results);
-      
+
       if (options.format === 'json') {
         console.log(JSON.stringify(report, null, 2));
       } else {
@@ -157,7 +163,7 @@ program
         console.log(`Low confidence: ${report.summary.lowConfidence}`);
         console.log(`Format valid: ${report.summary.formatValid}`);
         console.log(`High entropy: ${report.summary.highEntropy}`);
-        
+
         console.log('\n📋 Detailed Results:');
         console.table(report.details.map(detail => ({
           Key: detail.key,
@@ -167,9 +173,8 @@ program
           Score: detail.score
         })));
       }
-      
+
       console.log('\n✅ Validation completed!');
-      
     } catch (err) {
       console.error('Error during validation:', err.message);
     }
