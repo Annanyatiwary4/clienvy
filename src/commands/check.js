@@ -18,23 +18,28 @@ function parseEnvFile(content) {
   return keys;
 }
 
+function secretsRequireEnv(secrets) {
+  if (!secrets.length) return false;
+  const validated = filterValidated(secrets.filter((s) => s.confidence != null));
+  const extracted = secrets.filter((s) => s.confidence == null && s.value);
+  return validated.length > 0 || extracted.length > 0;
+}
+
 export async function checkCommand(cwd = process.cwd()) {
   let failed = false;
 
   const envPath = getEnvPath(cwd);
-  if (!(await fs.pathExists(envPath))) {
-    console.log(chalk.red('Missing .env file. Run: clenv generate'));
-    failed = true;
-  }
+  const envExists = await fs.pathExists(envPath);
 
   const secrets = await loadSecrets(cwd);
   const validated = filterValidated(secrets.filter((s) => s.confidence != null));
+  const requiresEnv = secretsRequireEnv(secrets);
 
   const files = await findFiles(cwd);
   const newMatches = await scanFiles(files, cwd);
 
   if (newMatches.length > 0) {
-    const known = new Set(validated.map((s) => `${s.file}:${s.line}:${s.value}`));
+    const known = new Set(secrets.map((s) => `${s.file}:${s.line}:${s.value}`));
     const unknown = newMatches.filter((m) => !known.has(`${m.file}:${m.line}:${m.value}`));
     if (unknown.length > 0) {
       console.log(chalk.red(`New hardcoded secrets detected: ${unknown.length}`));
@@ -45,7 +50,14 @@ export async function checkCommand(cwd = process.cwd()) {
     }
   }
 
-  if (await fs.pathExists(envPath)) {
+  if (requiresEnv && !envExists) {
+    console.log(
+      chalk.red('Secrets found in storage/secrets.json but .env is missing. Run: clenv generate')
+    );
+    failed = true;
+  }
+
+  if (envExists && requiresEnv) {
     const envKeys = parseEnvFile(await fs.readFile(envPath, 'utf8'));
     const requiredKeys = new Set(
       secrets.filter((s) => s.envKey && (s.confidence ?? 0) >= 50).map((s) => s.envKey)
@@ -64,6 +76,8 @@ export async function checkCommand(cwd = process.cwd()) {
         console.log(chalk.yellow(`Unused env var: ${key}`));
       }
     }
+  } else if (!requiresEnv && !envExists) {
+    console.log(chalk.gray('No secrets tracked — .env not required.'));
   }
 
   if (failed) {
