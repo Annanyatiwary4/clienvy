@@ -1,39 +1,38 @@
 {
   "name": "clienvy",
-  "version": "1.1.5",
-  "main": "index.js",
-  "bin": {
-    "clienvy": "bin/index.js"
-  },
+  "version": "2.0.0",
+  "description": "Secret Detection → Validation → Environment Migration → Code Remediation",
   "type": "module",
+  "main": "bin/clenv.js",
+  "bin": {
+    "clenv": "bin/clenv.js",
+    "clienvy": "bin/clenv.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    ".clienvyignore"
+  ],
+  "scripts": {
+    "clenv": "node bin/clenv.js"
+  },
   "keywords": [
     "environment",
-    "variables",
-    "env",
     "secrets",
     "cli",
     "dotenv",
     "security",
     "pre-commit",
-    "git-hook",
-    "npm",
-    "cli-tool",
-    "node-cli",
-    "auto-env",
-    "env-template",
-    "env-generator",
     "secret-scanner"
   ],
-  "author": "",
   "license": "MIT",
-  "description": "",
   "dependencies": {
-    "axios": "^1.12.2",
     "chalk": "^5.4.1",
     "commander": "^14.0.0",
     "fast-glob": "^3.3.3",
-    "fs-extra": "^11.3.0",
-    "globby": "^14.1.0",
-    "p-limit": "^7.2.0"
+    "fs-extra": "^11.3.0"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

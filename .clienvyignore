@@ -1,0 +1,16 @@
+# Clienvy ignore patterns (one per line, glob syntax)
+node_modules/**
+src/core/patterns/**
+storage/**
+dist/**
+build/**
+coverage/**
+.git/**
+dist/**
+build/**
+coverage/**
+.git/**
+storage/backups/**
+storage/reports/**
+*.min.js
+package-lock.json
